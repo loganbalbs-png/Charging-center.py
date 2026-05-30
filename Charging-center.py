@@ -1,45 +1,34 @@
 import tkinter as tk
-import time
 
 root = tk.Tk()
 root.title("AERO-OS")
 root.geometry("800x480")
-
-# Frutiger Aero colors
-BG = "#7fdfff"
-TASKBAR = "#0057d8"
-
-root.configure(bg=BG)
-
-# ---------- TOP BAR ----------
-
-top = tk.Frame(root, bg=TASKBAR, height=40)
-top.pack(fill="x")
-
-clock = tk.Label(
-    top,
-    text="",
-    bg=TASKBAR,
-    fg="white",
-    font=("Arial", 12)
-)
-
-clock.pack(side="right", padx=10)
+root.configure(bg="#87CEFA")
 
 title = tk.Label(
-    top,
-    text="🌊 AERO-OS",
-    bg=TASKBAR,
-    fg="white",
-    font=("Arial", 16, "bold")
+    root,
+    text="🌊 AERO-OS 🌊",
+    font=("Arial", 24, "bold"),
+    bg="#87CEFA"
 )
+title.pack(pady=20)
 
-title.pack(side="left", padx=10)
+def open_app(name):
+    app = tk.Toplevel(root)
+    app.title(name)
+    app.geometry("500x300")
 
-# ---------- DESKTOP ----------
+    tk.Label(
+        app,
+        text=name,
+        font=("Arial", 20, "bold")
+    ).pack(pady=30)
 
-desktop = tk.Frame(root, bg=BG)
-desktop.pack(fill="both", expand=True)
+    tk.Label(
+        app,
+        text=f"Welcome to {name}",
+        font=("Arial", 14)
+    ).pack()
 
 apps = [
     "📝 Notes",
@@ -50,21 +39,23 @@ apps = [
     "📁 Files",
     "⚙️ Settings",
     "🌈 AI",
-    "🛒 Store",
-    "🌦 Weather"
+    "🛒 Store"
 ]
+
+frame = tk.Frame(root, bg="#87CEFA")
+frame.pack()
 
 row = 0
 col = 0
 
 for app in apps:
-
     btn = tk.Button(
-        desktop,
+        frame,
         text=app,
         width=15,
         height=4,
-        font=("Arial", 12)
+        font=("Arial", 12),
+        command=lambda a=app: open_app(a)
     )
 
     btn.grid(
@@ -79,58 +70,5 @@ for app in apps:
     if col > 2:
         col = 0
         row += 1
-
-# ---------- TASKBAR ----------
-
-bottom = tk.Frame(root, bg=TASKBAR, height=40)
-bottom.pack(fill="x")
-
-start = tk.Button(
-    bottom,
-    text="Start"
-)
-
-start.pack(side="left", padx=5)
-
-wifi = tk.Label(
-    bottom,
-    text="📶",
-    bg=TASKBAR,
-    fg="white"
-)
-
-wifi.pack(side="right", padx=5)
-
-battery = tk.Label(
-    bottom,
-    text="🔋",
-    bg=TASKBAR,
-    fg="white"
-)
-
-battery.pack(side="right", padx=5)
-
-volume = tk.Label(
-    bottom,
-    text="🔊",
-    bg=TASKBAR,
-    fg="white"
-)
-
-volume.pack(side="right", padx=5)
-
-# ---------- CLOCK ----------
-
-def update_clock():
-    clock.config(
-        text=time.strftime("%I:%M %p")
-    )
-
-    root.after(
-        1000,
-        update_clock
-    )
-
-update_clock()
 
 root.mainloop()
