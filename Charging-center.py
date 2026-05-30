@@ -5,15 +5,122 @@ root.title("AERO-OS")
 root.geometry("800x480")
 root.configure(bg="#87CEFA")
 
-title = tk.Label(
-    root,
-    text="🌊 AERO-OS 🌊",
-    font=("Arial", 24, "bold"),
-    bg="#87CEFA"
-)
-title.pack(pady=20)
+# ---------- NOTES ----------
 
-def open_app(name):
+def open_notes():
+
+    app = tk.Toplevel(root)
+    app.title("AERO Notes")
+    app.geometry("600x400")
+
+    title = tk.Label(
+        app,
+        text="📝 AERO Notes",
+        font=("Arial", 20, "bold")
+    )
+    title.pack()
+
+    text = tk.Text(
+        app,
+        font=("Arial", 14)
+    )
+    text.pack(fill="both", expand=True)
+
+    def save_note():
+        with open("notes.txt", "w") as file:
+            file.write(text.get("1.0", tk.END))
+
+    def load_note():
+        try:
+            with open("notes.txt", "r") as file:
+                text.delete("1.0", tk.END)
+                text.insert(tk.END, file.read())
+        except:
+            pass
+
+    buttons = tk.Frame(app)
+    buttons.pack()
+
+    tk.Button(
+        buttons,
+        text="💾 Save",
+        command=save_note
+    ).pack(side="left", padx=10)
+
+    tk.Button(
+        buttons,
+        text="📂 Load",
+        command=load_note
+    ).pack(side="left", padx=10)
+
+    load_note()
+
+# ---------- CALCULATOR ----------
+
+def open_calculator():
+
+    app = tk.Toplevel(root)
+    app.title("Calculator")
+    app.geometry("350x450")
+
+    entry = tk.Entry(
+        app,
+        font=("Arial", 20)
+    )
+
+    entry.pack(fill="x")
+
+    def press(value):
+        entry.insert(tk.END, value)
+
+    def equals():
+        try:
+            result = eval(entry.get())
+            entry.delete(0, tk.END)
+            entry.insert(0, str(result))
+        except:
+            entry.delete(0, tk.END)
+            entry.insert(0, "Error")
+
+    buttons = [
+        "7","8","9","+",
+        "4","5","6","-",
+        "1","2","3","*",
+        "0",".","=","/"
+    ]
+
+    frame = tk.Frame(app)
+    frame.pack()
+
+    r = 0
+    c = 0
+
+    for b in buttons:
+
+        if b == "=":
+            cmd = equals
+        else:
+            cmd = lambda x=b: press(x)
+
+        tk.Button(
+            frame,
+            text=b,
+            width=5,
+            height=2,
+            font=("Arial", 14),
+            command=cmd
+        ).grid(row=r,column=c)
+
+        c += 1
+
+        if c > 3:
+            c = 0
+            r += 1
+
+# ---------- PLACEHOLDER APPS ----------
+
+def make_app(name):
+
     app = tk.Toplevel(root)
     app.title(name)
     app.geometry("500x300")
@@ -21,41 +128,67 @@ def open_app(name):
     tk.Label(
         app,
         text=name,
-        font=("Arial", 20, "bold")
-    ).pack(pady=30)
+        font=("Arial", 24, "bold")
+    ).pack(pady=50)
 
     tk.Label(
         app,
-        text=f"Welcome to {name}",
-        font=("Arial", 14)
+        text="Coming Soon",
+        font=("Arial", 16)
     ).pack()
 
-apps = [
-    "📝 Notes",
-    "🧮 Calculator",
-    "📷 Camera",
-    "🖼 Photos",
-    "🎵 Music",
-    "📁 Files",
-    "⚙️ Settings",
-    "🌈 AI",
-    "🛒 Store"
-]
+# ---------- HOME SCREEN ----------
 
-frame = tk.Frame(root, bg="#87CEFA")
+title = tk.Label(
+    root,
+    text="🌊 AERO-OS 🌊",
+    font=("Arial", 24, "bold"),
+    bg="#87CEFA"
+)
+title.pack(pady=10)
+
+frame = tk.Frame(root,bg="#87CEFA")
 frame.pack()
+
+apps = [
+
+    ("📝 Notes", open_notes),
+    ("🧮 Calculator", open_calculator),
+
+    ("📷 Camera",
+     lambda: make_app("📷 Camera")),
+
+    ("🖼 Photos",
+     lambda: make_app("🖼 Photos")),
+
+    ("🎵 Music",
+     lambda: make_app("🎵 Music")),
+
+    ("📁 Files",
+     lambda: make_app("📁 Files")),
+
+    ("⚙️ Settings",
+     lambda: make_app("⚙️ Settings")),
+
+    ("🌈 AERO AI",
+     lambda: make_app("🌈 AERO AI")),
+
+    ("🛒 Store",
+     lambda: make_app("🛒 Store"))
+]
 
 row = 0
 col = 0
 
-for app in apps:
+for text, command in apps:
+
     btn = tk.Button(
         frame,
-        text=app,
+        text=text,
         width=15,
         height=4,
-        font=("Arial", 12),
-        command=lambda a=app: open_app(a)
+        font=("Arial",12),
+        command=command
     )
 
     btn.grid(
