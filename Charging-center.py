@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import tkinter as tk
 import time
 import random
@@ -11,19 +9,13 @@ root = tk.Tk()
 root.title("AERO Charging Center")
 root.geometry("800x480")
 
-canvas = tk.Canvas(
-    root,
-    width=WIDTH,
-    height=HEIGHT,
-    highlightthickness=0
-)
-
-canvas.place(x=0, y=0)
+# Canvas
+canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT, highlightthickness=0)
+canvas.pack(fill="both", expand=True)
 
 # Background
 canvas.create_rectangle(
-    0, 0,
-    WIDTH, HEIGHT,
+    0, 0, WIDTH, HEIGHT,
     fill="#87CEFA",
     outline=""
 )
@@ -47,10 +39,8 @@ for i in range(20):
     size = random.randint(20, 50)
 
     bubble = canvas.create_oval(
-        x,
-        y,
-        x + size,
-        y + size,
+        x, y,
+        x + size, y + size,
         outline="white",
         width=2
     )
@@ -59,8 +49,7 @@ for i in range(20):
 
 # Title
 canvas.create_text(
-    400,
-    50,
+    400, 50,
     text="AERO CHARGING CENTER",
     font=("Arial", 24, "bold"),
     fill="white"
@@ -68,17 +57,15 @@ canvas.create_text(
 
 # Clock
 clock_text = canvas.create_text(
-    400,
-    120,
+    400, 120,
     text="",
-    font=("Arial", 40, "bold"),
+    font=("Arial", 36, "bold"),
     fill="white"
 )
 
 # Status
 status_text = canvas.create_text(
-    400,
-    190,
+    400, 190,
     text="Select a Device",
     font=("Arial", 22, "bold"),
     fill="#CCFFCC"
@@ -86,43 +73,77 @@ status_text = canvas.create_text(
 
 # Footer
 canvas.create_text(
-    400,
-    450,
+    400, 450,
     text="AERO-OS Charging Hub",
     font=("Arial", 12),
     fill="white"
 )
 
-# Device Selection
+# Device selector
 def set_device(device):
     canvas.itemconfig(
         status_text,
-        text="Charging " + device
+        text=f"Charging {device}"
     )
+
+# LEFT BUTTONS
+left_frame = tk.Frame(root, bg="#87CEFA")
+canvas.create_window(
+    110,
+    180,
+    window=left_frame
+)
+
+# RIGHT BUTTONS
+right_frame = tk.Frame(root, bg="#87CEFA")
+canvas.create_window(
+    690,
+    180,
+    window=right_frame
+)
 
 # Buttons
-devices = [
-    ("Apple Watch", 20, 120),
-    ("AirPods", 20, 170),
-    ("iPhone", 20, 220),
-    ("Cyberdeck", 620, 120),
-    ("iPad", 620, 170),
-    ("MacBook", 620, 220)
-]
+tk.Button(
+    left_frame,
+    text="Apple Watch",
+    width=15,
+    command=lambda: set_device("Apple Watch")
+).pack(pady=5)
 
-for name, x, y in devices:
+tk.Button(
+    left_frame,
+    text="AirPods",
+    width=15,
+    command=lambda: set_device("AirPods")
+).pack(pady=5)
 
-    button = tk.Button(
-        root,
-        text=name,
-        width=15,
-        command=lambda d=name: set_device(d)
-    )
+tk.Button(
+    left_frame,
+    text="iPhone",
+    width=15,
+    command=lambda: set_device("iPhone")
+).pack(pady=5)
 
-    button.place(
-        x=x,
-        y=y
-    )
+tk.Button(
+    right_frame,
+    text="Cyberdeck",
+    width=15,
+    command=lambda: set_device("Cyberdeck")
+).pack(pady=5)
+
+tk.Button(
+    right_frame,
+    text="iPad",
+    width=15,
+    command=lambda: set_device("iPad")
+).pack(pady=5)
+
+tk.Button(
+    right_frame,
+    text="MacBook",
+    width=15,
+    command=lambda: set_device("MacBook")
+).pack(pady=5)
 
 # Animation
 def update():
