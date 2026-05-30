@@ -1,207 +1,150 @@
 import tkinter as tk
-
+import time
+import random
+WIDTH = 800
+HEIGHT = 480
 root = tk.Tk()
-root.title("AERO-OS")
-root.geometry("800x480")
-root.configure(bg="#87CEFA")
-
-# ---------- NOTES ----------
-
-def open_notes():
-
-    app = tk.Toplevel(root)
-    app.title("AERO Notes")
-    app.geometry("600x400")
-
-    title = tk.Label(
-        app,
-        text="📝 AERO Notes",
-        font=("Arial", 20, "bold")
-    )
-    title.pack()
-
-    text = tk.Text(
-        app,
-        font=("Arial", 14)
-    )
-    text.pack(fill="both", expand=True)
-
-    def save_note():
-        with open("notes.txt", "w") as file:
-            file.write(text.get("1.0", tk.END))
-
-    def load_note():
-        try:
-            with open("notes.txt", "r") as file:
-                text.delete("1.0", tk.END)
-                text.insert(tk.END, file.read())
-        except:
-            pass
-
-    buttons = tk.Frame(app)
-    buttons.pack()
-
-    tk.Button(
-        buttons,
-        text="💾 Save",
-        command=save_note
-    ).pack(side="left", padx=10)
-
-    tk.Button(
-        buttons,
-        text="📂 Load",
-        command=load_note
-    ).pack(side="left", padx=10)
-
-    load_note()
-
-# ---------- CALCULATOR ----------
-
-def open_calculator():
-
-    app = tk.Toplevel(root)
-    app.title("Calculator")
-    app.geometry("350x450")
-
-    entry = tk.Entry(
-        app,
-        font=("Arial", 20)
-    )
-
-    entry.pack(fill="x")
-
-    def press(value):
-        entry.insert(tk.END, value)
-
-    def equals():
-        try:
-            result = eval(entry.get())
-            entry.delete(0, tk.END)
-            entry.insert(0, str(result))
-        except:
-            entry.delete(0, tk.END)
-            entry.insert(0, "Error")
-
-    buttons = [
-        "7","8","9","+",
-        "4","5","6","-",
-        "1","2","3","*",
-        "0",".","=","/"
-    ]
-
-    frame = tk.Frame(app)
-    frame.pack()
-
-    r = 0
-    c = 0
-
-    for b in buttons:
-
-        if b == "=":
-            cmd = equals
-        else:
-            cmd = lambda x=b: press(x)
-
-        tk.Button(
-            frame,
-            text=b,
-            width=5,
-            height=2,
-            font=("Arial", 14),
-            command=cmd
-        ).grid(row=r,column=c)
-
-        c += 1
-
-        if c > 3:
-            c = 0
-            r += 1
-
-# ---------- PLACEHOLDER APPS ----------
-
-def make_app(name):
-
-    app = tk.Toplevel(root)
-    app.title(name)
-    app.geometry("500x300")
-
-    tk.Label(
-        app,
-        text=name,
-        font=("Arial", 24, "bold")
-    ).pack(pady=50)
-
-    tk.Label(
-        app,
-        text="Coming Soon",
-        font=("Arial", 16)
-    ).pack()
-
-# ---------- HOME SCREEN ----------
-
-title = tk.Label(
+root.title("AERO Charging Center")
+root.geometry(f"{WIDTH}x{HEIGHT}")
+canvas = tk.Canvas(
     root,
-    text="🌊 AERO-OS 🌊",
-    font=("Arial", 24, "bold"),
-    bg="#87CEFA"
+    width=WIDTH,
+    height=HEIGHT,
+    highlightthickness=0
 )
-title.pack(pady=10)
-
-frame = tk.Frame(root,bg="#87CEFA")
-frame.pack()
-
-apps = [
-
-    ("📝 Notes", open_notes),
-    ("🧮 Calculator", open_calculator),
-
-    ("📷 Camera",
-     lambda: make_app("📷 Camera")),
-
-    ("🖼 Photos",
-     lambda: make_app("🖼 Photos")),
-
-    ("🎵 Music",
-     lambda: make_app("🎵 Music")),
-
-    ("📁 Files",
-     lambda: make_app("📁 Files")),
-
-    ("⚙️ Settings",
-     lambda: make_app("⚙️ Settings")),
-
-    ("🌈 AERO AI",
-     lambda: make_app("🌈 AERO AI")),
-
-    ("🛒 Store",
-     lambda: make_app("🛒 Store"))
-]
-
-row = 0
-col = 0
-
-for text, command in apps:
-
-    btn = tk.Button(
-        frame,
-        text=text,
-        width=15,
-        height=4,
-        font=("Arial",12),
-        command=command
+canvas.pack(fill="both", expand=True)
+# Background
+canvas.create_rectangle(
+    0, 0,
+    WIDTH, HEIGHT,
+    fill="#87CEFA",
+    outline=""
+)
+# Hill
+canvas.create_arc(
+    -200, 250,
+    1000, 900,
+    start=0,
+    extent=180,
+    fill="#33CC66",
+    outline="#33CC66"
+)
+# Bubbles
+bubbles = []
+for i in range(20):
+    x = random.randint(0, WIDTH)
+    y = random.randint(0, HEIGHT)
+    size = random.randint(20, 50)
+    bubble = canvas.create_oval(
+        x,
+        y,
+        x + size,
+        y + size,
+        outline="white",
+        width=2
     )
-
-    btn.grid(
-        row=row,
-        column=col,
-        padx=10,
-        pady=10
+    bubbles.append((bubble, random.uniform(0.5, 2)))
+# Title
+canvas.create_text(
+    400,
+    50,
+    text="⚡ AERO CHARGING CENTER ⚡",
+    font=("Arial", 24, "bold"),
+    fill="white"
+)
+# Clock
+clock_text = canvas.create_text(
+    400,
+    120,
+    text="",
+    font=("Arial", 40, "bold"),
+    fill="white"
+)
+# Status
+status_text = canvas.create_text(
+    400,
+    190,
+    text="Select a Device",
+    font=("Arial", 22, "bold"),
+    fill="#CCFFCC"
+)
+# Battery
+battery_text = canvas.create_text(
+    400,
+    230,
+    text="Ready to Charge",
+    font=("Arial", 16),
+    fill="white"
+)
+def set_device(device):
+    canvas.itemconfig(
+        status_text,
+        text=f"⚡ Charging {device}"
     )
-
-    col += 1
-
-    if col > 2:
-        col = 0
-        row += 1
-
+# Device Buttons
+tk.Button(
+    root,
+    text="⌚ Apple Watch",
+    command=lambda: set_device("Apple Watch")
+).place(x=20, y=120)
+tk.Button(
+    root,
+    text="🎧 AirPods",
+    command=lambda: set_device("AirPods")
+).place(x=20, y=170)
+tk.Button(
+    root,
+    text="📱 iPhone",
+    command=lambda: set_device("iPhone")
+).place(x=20, y=220)
+tk.Button(
+    root,
+    text="💻 Cyberdeck",
+    command=lambda: set_device("Cyberdeck")
+).place(x=620, y=120)
+tk.Button(
+    root,
+    text="📲 iPad",
+    command=lambda: set_device("iPad")
+).place(x=620, y=170)
+tk.Button(
+    root,
+    text="💻 MacBook",
+    command=lambda: set_device("MacBook")
+).place(x=620, y=220)
+# Footer
+canvas.create_text(
+    400,
+    450,
+    text="AERO-OS Charging Hub",
+    font=("Arial", 12),
+    fill="white"
+)
+def update():
+    canvas.itemconfig(
+        clock_text,
+        text=time.strftime("%H:%M:%S")
+    )
+    for bubble, speed in bubbles:
+        canvas.move(
+            bubble,
+            0,
+            -speed
+        )
+        x1, y1, x2, y2 = canvas.coords(bubble)
+        if y2 < 0:
+            size = x2 - x1
+            new_x = random.randint(
+                0,
+                WIDTH
+            )
+            canvas.coords(
+                bubble,
+                new_x,
+                HEIGHT,
+                new_x + size,
+                HEIGHT + size
+            )
+    root.after(30, update)
+update()
 root.mainloop()
