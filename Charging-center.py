@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import tkinter as tk
 import time
 import random
@@ -6,175 +8,155 @@ WIDTH = 800
 HEIGHT = 480
 
 root = tk.Tk()
-root.title(“AERO Charging Center”)
-root.geometry(“800x480”)
+root.title("AERO Charging Center")
+root.geometry("800x480")
 
 canvas = tk.Canvas(
-root,
-width=WIDTH,
-height=HEIGHT,
-highlightthickness=0
+    root,
+    width=WIDTH,
+    height=HEIGHT,
+    highlightthickness=0
 )
 
 canvas.place(x=0, y=0)
 
-Background
-
+# Background
 canvas.create_rectangle(
-0, 0,
-WIDTH, HEIGHT,
-fill=”#87CEFA”,
-outline=””
+    0, 0,
+    WIDTH, HEIGHT,
+    fill="#87CEFA",
+    outline=""
 )
 
-Hill
-
+# Hill
 canvas.create_arc(
--200, 250,
-1000, 900,
-start=0,
-extent=180,
-fill=”#33CC66”,
-outline=”#33CC66”
+    -200, 250,
+    1000, 900,
+    start=0,
+    extent=180,
+    fill="#33CC66",
+    outline="#33CC66"
 )
 
-Bubbles
-
+# Bubbles
 bubbles = []
 
 for i in range(20):
-x = random.randint(0, WIDTH)
-y = random.randint(0, HEIGHT)
-size = random.randint(20, 50)
+    x = random.randint(0, WIDTH)
+    y = random.randint(0, HEIGHT)
+    size = random.randint(20, 50)
 
-bubble = canvas.create_oval(
-    x,
-    y,
-    x + size,
-    y + size,
-    outline="white",
-    width=2
-)
-bubbles.append(
-    (bubble, random.uniform(0.5, 2))
-)
+    bubble = canvas.create_oval(
+        x,
+        y,
+        x + size,
+        y + size,
+        outline="white",
+        width=2
+    )
 
-Title
+    bubbles.append((bubble, random.uniform(0.5, 2)))
 
+# Title
 canvas.create_text(
-400,
-50,
-text=“⚡ AERO CHARGING CENTER ⚡”,
-font=(“Arial”, 24, “bold”),
-fill=“white”
+    400,
+    50,
+    text="AERO CHARGING CENTER",
+    font=("Arial", 24, "bold"),
+    fill="white"
 )
 
-Clock
-
+# Clock
 clock_text = canvas.create_text(
-400,
-120,
-text=””,
-font=(“Arial”, 40, “bold”),
-fill=“white”
+    400,
+    120,
+    text="",
+    font=("Arial", 40, "bold"),
+    fill="white"
 )
 
-Status
-
+# Status
 status_text = canvas.create_text(
-400,
-190,
-text=“Select a Device”,
-font=(“Arial”, 22, “bold”),
-fill=”#CCFFCC”
+    400,
+    190,
+    text="Select a Device",
+    font=("Arial", 22, "bold"),
+    fill="#CCFFCC"
 )
 
-Battery
-
+# Footer
 canvas.create_text(
-400,
-230,
-text=“Ready To Charge”,
-font=(“Arial”, 16),
-fill=“white”
+    400,
+    450,
+    text="AERO-OS Charging Hub",
+    font=("Arial", 12),
+    fill="white"
 )
 
-Footer
-
-canvas.create_text(
-400,
-450,
-text=“AERO-OS Charging Hub”,
-font=(“Arial”, 12),
-fill=“white”
-)
-
-Change text
-
+# Device Selection
 def set_device(device):
-canvas.itemconfig(
-status_text,
-text=f”⚡ Charging {device}”
-)
+    canvas.itemconfig(
+        status_text,
+        text="Charging " + device
+    )
 
-Buttons
-
+# Buttons
 devices = [
-(“⌚ Apple Watch”, 20, 120),
-(“🎧 AirPods”, 20, 170),
-(“📱 iPhone”, 20, 220),
-(“💻 Cyberdeck”, 620, 120),
-(“📲 iPad”, 620, 170),
-(“💻 MacBook”, 620, 220)
+    ("Apple Watch", 20, 120),
+    ("AirPods", 20, 170),
+    ("iPhone", 20, 220),
+    ("Cyberdeck", 620, 120),
+    ("iPad", 620, 170),
+    ("MacBook", 620, 220)
 ]
 
 for name, x, y in devices:
 
-btn = tk.Button(
-    root,
-    text=name,
-    width=15,
-    command=lambda d=name: set_device(d)
-)
-btn.place(
-    x=x,
-    y=y
-)
+    button = tk.Button(
+        root,
+        text=name,
+        width=15,
+        command=lambda d=name: set_device(d)
+    )
 
-Animation
+    button.place(
+        x=x,
+        y=y
+    )
 
+# Animation
 def update():
 
-canvas.itemconfig(
-    clock_text,
-    text=time.strftime("%H:%M:%S")
-)
-for bubble, speed in bubbles:
-    canvas.move(
-        bubble,
-        0,
-        -speed
+    canvas.itemconfig(
+        clock_text,
+        text=time.strftime("%H:%M:%S")
     )
-    x1, y1, x2, y2 = canvas.coords(
-        bubble
-    )
-    if y2 < 0:
-        size = x2 - x1
-        new_x = random.randint(
-            0,
-            WIDTH
-        )
-        canvas.coords(
+
+    for bubble, speed in bubbles:
+
+        canvas.move(
             bubble,
-            new_x,
-            HEIGHT,
-            new_x + size,
-            HEIGHT + size
+            0,
+            -speed
         )
-root.after(
-    30,
-    update
-)
+
+        x1, y1, x2, y2 = canvas.coords(bubble)
+
+        if y2 < 0:
+
+            size = x2 - x1
+
+            new_x = random.randint(0, WIDTH)
+
+            canvas.coords(
+                bubble,
+                new_x,
+                HEIGHT,
+                new_x + size,
+                HEIGHT + size
+            )
+
+    root.after(30, update)
 
 update()
 
