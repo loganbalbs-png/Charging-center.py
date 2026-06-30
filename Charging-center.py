@@ -85,14 +85,16 @@ def unlock():
     desktop.pack(fill="both",expand=True)
 
 def press(event):
-
     global dragging
 
-    x1,y1,x2,y2 = track.coords(slider)
+    print("Pressed!")
 
-    if x1<=event.x<=x2:
-        dragging=True
+    x1, y1, x2, y2 = track.coords(slider)
 
+    if x1 <= event.x <= x2:
+        dragging = True
+        print("Dragging Started")
+        
 def drag(event):
 
     global dragging
