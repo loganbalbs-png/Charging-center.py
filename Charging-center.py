@@ -227,7 +227,6 @@ apps=[
 ("💻","Terminal"),
 ("🎮","Games"),
 ] 
-
 start_x = 90
 start_y = 90
 spacing_x = 170
