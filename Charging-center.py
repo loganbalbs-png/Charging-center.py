@@ -9,126 +9,307 @@ root.title("AERO-OS")
 root.geometry(f"{WIDTH}x{HEIGHT}")
 root.attributes("-fullscreen", True)
 
-canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT, highlightthickness=0)
-canvas.pack(fill="both", expand=True)
+# ---------- LOCK SCREEN ----------
 
-# ---------- Background ----------
-canvas.create_rectangle(
-    0, 0,
-    WIDTH, HEIGHT,
-    fill="#74D8FF",
-    outline=""
-)
+lock = tk.Frame(root, bg="#74D8FF")
+lock.pack(fill="both", expand=True)
 
-# Top Bar
-canvas.create_rectangle(
-    0, 0,
-    WIDTH, 40,
-    fill="#CFF8FF",
-    outline=""
-)
-
-canvas.create_text(
-    20,
-    20,
+title = tk.Label(
+    lock,
     text="AERO-OS",
-    anchor="w",
-    font=("Arial",18,"bold"),
-    fill="#0077AA"
+    bg="#74D8FF",
+    fg="white",
+    font=("Arial",30,"bold")
 )
+title.pack(pady=40)
 
-clock = canvas.create_text(
-    WIDTH-20,
+clock_label = tk.Label(
+    lock,
+    bg="#74D8FF",
+    fg="white",
+    font=("Arial",24)
+)
+clock_label.pack()
+
+subtitle = tk.Label(
+    lock,
+    text="Slide into AERO",
+    bg="#74D8FF",
+    fg="white",
+    font=("Arial",18,"bold")
+)
+subtitle.pack(pady=35)
+
+track = tk.Canvas(
+    lock,
+    width=500,
+    height=60,
+    bg="#74D8FF",
+    highlightthickness=0
+)
+track.pack()
+
+track.create_rectangle(
     20,
-    text="",
-    anchor="e",
-    font=("Arial",14,"bold"),
-    fill="#0077AA"
-)
-
-# Bottom Taskbar
-canvas.create_rectangle(
-    0,
-    HEIGHT-45,
-    WIDTH,
-    HEIGHT,
+    20,
+    480,
+    45,
     fill="#DDF9FF",
-    outline=""
+    outline="white"
 )
 
-canvas.create_text(
-    50,
-    HEIGHT-22,
-    text="START",
-    font=("Arial",14,"bold"),
-    fill="#0077AA"
+slider = track.create_oval(
+    20,
+    10,
+    70,
+    55,
+    fill="#00AAFF",
+    outline="white",
+    width=2
 )
+
+dragging = False
+
+desktop = tk.Frame(root,bg="#74D8FF")
 
 def update_clock():
-    canvas.itemconfig(
-        clock,
+    clock_label.config(
         text=time.strftime("%I:%M %p")
     )
-    root.after(1000, update_clock)
+    root.after(1000,update_clock)
+
+update_clock()
+
+def unlock():
+    lock.pack_forget()
+    desktop.pack(fill="both",expand=True)
+
+def press(event):
+
+    global dragging
+
+    x1,y1,x2,y2 = track.coords(slider)
+
+    if x1<=event.x<=x2:
+        dragging=True
+
+def drag(event):
+
+    global dragging
+
+    if not dragging:
+        return
+
+    x=event.x
+
+    if x<20:
+        x=20
+
+    if x>430:
+        x=430
+
+    track.coords(
+        slider,
+        x,
+        10,
+        x+50,
+        55
+    )
+
+def release(event):
+
+    global dragging
+    dragging=False
+
+    x1,y1,x2,y2=track.coords(slider)
+
+    if x1>=425:
+
+        unlock()
+
+    else:
+
+        track.coords(
+            slider,
+            20,
+            10,
+            70,
+            55
+        )
+
+track.bind("<Button-1>",press)
+track.bind("<B1-Motion>",drag)
+track.bind("<ButtonRelease-1>",release)
+
+# -----------------------
+# DESKTOP
+# -----------------------
+
+top=tk.Frame(
+    desktop,
+    bg="#DDF9FF",
+    height=40
+)
+
+top.pack(fill="x")
+
+logo=tk.Label(
+    top,
+    text="AERO-OS",
+    bg="#DDF9FF",
+    fg="#0077AA",
+    font=("Arial",18,"bold")
+)
+
+logo.pack(
+    side="left",
+    padx=15
+)
+
+desktop_clock=tk.Label(
+    top,
+    bg="#DDF9FF",
+    fg="#0077AA",
+    font=("Arial",14,"bold")
+)
+
+desktop_clock.pack(
+    side="right",
+    padx=15
+)
+
+def update_desktop_clock():
+
+    desktop_clock.config(
+        text=time.strftime("%I:%M %p")
+    )
+
+    root.after(
+        1000,
+        update_desktop_clock
+    )
+
+update_desktop_clock()
 
 def open_app(name):
-    win = tk.Toplevel(root)
-    win.title(name)
-    win.geometry("350x220")
+
+    app=tk.Toplevel(root)
+
+    app.title(name)
+
+    app.geometry("350x220")
 
     tk.Label(
-        win,
+        app,
         text=name,
         font=("Arial",20,"bold")
-    ).pack(pady=20)
+    ).pack(
+        pady=20
+    )
 
     tk.Label(
-        win,
-        text="Coming Soon!",
+        app,
+        text="AERO-OS Application",
         font=("Arial",14)
     ).pack()
 
-# ---------- Apps ----------
-
-apps = [
-    ("🌐","AeroNet"),
-    ("📝","AeroNotes"),
-    ("📁","AeroFiles"),
-    ("📷","AeroCam"),
-    ("🖼","Gallery"),
-    ("🎵","Music"),
-    ("⚡","Charge"),
-    ("🌈","AeroAI"),
-    ("🛒","Store"),
-    ("⚙","Settings"),
-    ("💻","Terminal"),
-    ("🎮","Games")
-]
+apps=[
+("🌐","AeroNet"),
+("📝","AeroNotes"),
+("📁","AeroFiles"),
+("📷","AeroCam"),
+("🖼","Gallery"),
+("🎵","Music"),
+("⚡","Charge"),
+("🌈","AeroAI"),
+("🛒","Store"),
+("⚙","Settings"),
+("💻","Terminal"),
+("🎮","Games"),
+] 
 
 start_x = 90
 start_y = 90
 spacing_x = 170
 spacing_y = 110
 
-for i,(icon,name) in enumerate(apps):
+for i, (icon, name) in enumerate(apps):
 
     row = i // 4
     col = i % 4
 
-    x = start_x + col*spacing_x
-    y = start_y + row*spacing_y
+    x = start_x + col * spacing_x
+    y = start_y + row * spacing_y
 
     btn = tk.Button(
-        root,
+        desktop,
         text=f"{icon}\n{name}",
         width=12,
         height=3,
         bg="#EFFFFF",
+        fg="#006699",
+        relief="raised",
         command=lambda n=name: open_app(n)
     )
 
-    btn.place(x=x-45,y=y-20)
+    btn.place(
+        x=x-45,
+        y=y
+    )
 
-update_clock()
+# -----------------------
+# TASKBAR
+# -----------------------
+
+taskbar = tk.Frame(
+    desktop,
+    bg="#DDF9FF",
+    height=45
+)
+
+taskbar.pack(
+    side="bottom",
+    fill="x"
+)
+
+start_button = tk.Button(
+    taskbar,
+    text="🟢 START",
+    bg="#CFF8FF",
+    fg="#006699",
+    font=("Arial", 11, "bold")
+)
+
+start_button.pack(
+    side="left",
+    padx=10,
+    pady=5
+)
+
+exit_button = tk.Button(
+    taskbar,
+    text="Exit",
+    bg="#FFDDDD",
+    command=root.destroy
+)
+
+exit_button.pack(
+    side="right",
+    padx=10,
+    pady=5
+)
+
+status = tk.Label(
+    taskbar,
+    text="Welcome to AERO-OS",
+    bg="#DDF9FF",
+    fg="#006699",
+    font=("Arial", 10)
+)
+
+status.pack(
+    side="left",
+    padx=20
+)
 
 root.mainloop()
