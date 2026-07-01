@@ -7,53 +7,59 @@ HEIGHT = 480
 root = tk.Tk()
 root.title("AERO-OS")
 root.geometry("800x480")
-root.configure(bg="#6FD6FF")
 root.attributes("-fullscreen", True)
+root.configure(bg="#66CCFF")
 
-# =========================
-# Background
-# =========================
+# -----------------------
+# Desktop Background
+# -----------------------
 
-bg = tk.Canvas(
-    root,
-    width=WIDTH,
-    height=HEIGHT,
-    bg="#6FD6FF",
-    highlightthickness=0
-)
-bg.pack(fill="both", expand=True)
+desktop = tk.Frame(root, bg="#66CCFF")
+desktop.pack(fill="both", expand=True)
 
+# -----------------------
 # Top Bar
-bg.create_rectangle(
-    0,0,
-    WIDTH,45,
-    fill="#D9F7FF",
-    outline=""
+# -----------------------
+
+topbar = tk.Frame(
+    desktop,
+    bg="#DDF9FF",
+    height=45
 )
 
-bg.create_text(
-    20,
-    22,
-    anchor="w",
+topbar.pack(fill="x")
+
+title = tk.Label(
+    topbar,
     text="AERO-OS",
-    fill="#0077AA",
-    font=("Arial",20,"bold")
+    bg="#DDF9FF",
+    fg="#0077AA",
+    font=("Arial",18,"bold")
 )
 
-clock = bg.create_text(
-    780,
-    22,
-    anchor="e",
-    text="",
-    fill="#0077AA",
+title.pack(
+    side="left",
+    padx=15
+)
+
+clock = tk.Label(
+    topbar,
+    bg="#DDF9FF",
+    fg="#0077AA",
     font=("Arial",14,"bold")
 )
 
+clock.pack(
+    side="right",
+    padx=15
+)
+
 def update_clock():
-    bg.itemconfig(
-        clock,
+
+    clock.config(
         text=time.strftime("%I:%M %p")
     )
+
     root.after(
         1000,
         update_clock
@@ -61,101 +67,115 @@ def update_clock():
 
 update_clock()
 
-# Bottom Taskbar
+# -----------------------
+# Desktop Area
+# -----------------------
 
-bg.create_rectangle(
-    0,
-    435,
-    WIDTH,
-    HEIGHT,
-    fill="#D9F7FF",
-    outline=""
+icons = tk.Frame(
+    desktop,
+    bg="#66CCFF"
 )
 
-# Desktop title
-
-bg.create_text(
-    400,
-    70,
-    text="Welcome to AERO-OS",
-    fill="white",
-    font=("Arial",24,"bold")
+icons.pack(
+    expand=True,
+    fill="both",
+    pady=20
 )
 
 def open_app(name):
 
-    app=tk.Toplevel(root)
+    app = tk.Toplevel(root)
+
     app.title(name)
+
     app.geometry("400x300")
+
+    app.configure(bg="#DDF9FF")
 
     tk.Label(
         app,
         text=name,
+        bg="#DDF9FF",
+        fg="#0077AA",
         font=("Arial",22,"bold")
-    ).pack(pady=20)
+    ).pack(
+        pady=25
+    )
 
     tk.Label(
         app,
         text="Coming Soon",
+        bg="#DDF9FF",
         font=("Arial",14)
     ).pack()
 
-apps=[
+apps = [
+
 ("🌐","AeroNet"),
 ("📝","AeroNotes"),
 ("📁","AeroFiles"),
 ("📷","AeroCam"),
+
 ("🖼️","Gallery"),
 ("🎵","Music"),
 ("⚡","Charge"),
 ("⚙️","Settings"),
+
 ("🤖","AeroAI"),
 ("🛒","Store"),
 ("🎮","Games"),
 ("💻","Terminal")
+
 ]
-
-# =========================
+# -----------------------
 # Desktop Icons
-# =========================
+# -----------------------
 
-start_x = 90
-start_y = 110
-spacing_x = 170
-spacing_y = 110
+rows = 3
+cols = 4
 
 for i, (icon, name) in enumerate(apps):
 
-    row = i // 4
-    col = i % 4
+    row = i // cols
+    col = i % cols
 
-    x = start_x + (col * spacing_x)
-    y = start_y + (row * spacing_y)
-
-    btn = tk.Button(
-        root,
+    button = tk.Button(
+        icons,
         text=f"{icon}\n{name}",
+        font=("Arial", 13, "bold"),
         width=12,
-        height=3,
+        height=4,
         bg="#EFFFFF",
         fg="#0077AA",
-        activebackground="#BFEFFF",
+        activebackground="#C8F4FF",
         relief="raised",
-        bd=2,
+        bd=3,
         command=lambda n=name: open_app(n)
     )
 
-    btn.place
-    x=x-45,
-    y=y
+    button.grid(
+        row=row,
+        column=col,
+        padx=20,
+        pady=15
+    )
 
+# -----------------------
+# Bottom Taskbar
+# -----------------------
 
-btn.lift()
-    
+taskbar = tk.Frame(
+    desktop,
+    bg="#DDF9FF",
+    height=45
+)
 
-# =========================
-# Start Button
-# =========================
+taskbar.pack(
+    side="bottom",
+    fill="x"
+)
+
+# Start Menu
 
 def start_menu():
 
@@ -163,7 +183,7 @@ def start_menu():
 
     menu.title("Start")
 
-    menu.geometry("240x300+0+180")
+    menu.geometry("250x320")
 
     menu.configure(bg="#DDF9FF")
 
@@ -172,23 +192,25 @@ def start_menu():
         text="AERO-OS",
         bg="#DDF9FF",
         fg="#0077AA",
-        font=("Arial",18,"bold")
-    ).pack(pady=10)
+        font=("Arial",20,"bold")
+    ).pack(pady=15)
 
-    items = [
+    options = [
         "🌐 AeroNet",
         "📝 AeroNotes",
         "📁 AeroFiles",
+        "📷 AeroCam",
         "🎮 Games",
         "⚙️ Settings"
     ]
 
-    for item in items:
+    for item in options:
 
         tk.Button(
             menu,
             text=item,
-            width=20
+            width=22,
+            bg="#EFFFFF"
         ).pack(pady=4)
 
     tk.Button(
@@ -199,43 +221,44 @@ def start_menu():
     ).pack(pady=20)
 
 start = tk.Button(
-    root,
+    taskbar,
     text="🟢 START",
-    bg="#DDF9FF",
+    bg="#EFFFFF",
     fg="#0077AA",
     font=("Arial",12,"bold"),
     command=start_menu
 )
 
-start.place(
-    x=10,
-    y=440
+start.pack(
+    side="left",
+    padx=10,
+    pady=5
 )
 
-start.lift()
+status = tk.Label(
+    taskbar,
+    text="Welcome to AERO-OS",
+    bg="#DDF9FF",
+    fg="#0077AA",
+    font=("Arial",10)
+)
 
+status.pack(
+    side="left",
+    padx=20
+)
 
-exit_btn = tk.Button(
-    root,
-    text="❌",
-    bg="#FFAAAA",
+exit_button = tk.Button(
+    taskbar,
+    text="❌ Exit",
+    bg="#FFCCCC",
     command=root.destroy
 )
 
-exit_btn.place(
-    x=760,
-    y=440
-)
-
-exit_btn.lift()
-)
-
-bg.create_text(
-    400,
-    456,
-    text="AERO-OS Version 0.2",
-    fill="#0077AA",
-    font=("Arial",10)
+exit_button.pack(
+    side="right",
+    padx=10,
+    pady=5
 )
 
 root.mainloop()
