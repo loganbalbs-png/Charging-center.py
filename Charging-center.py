@@ -139,9 +139,9 @@ def release(event):
             55
         )
 
-track.bind("<Button-1>",press)
-track.bind("<B1-Motion>",drag)
-track.bind("<ButtonRelease-1>",release)
+track.bind("<ButtonPress-1>", press)
+track.bind("<ButtonRelease-1>", release)
+track.bind("<B1-Motion>", drag)
 
 # -----------------------
 # DESKTOP
