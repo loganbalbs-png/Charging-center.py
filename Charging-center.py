@@ -145,13 +145,13 @@ for i, (icon, name) in enumerate(apps):
         command=lambda n=name: open_app(n)
     )
 
-    btn.place(
+    btn.place
     x=x-45,
     y=y
-)
+
 
 btn.lift()
-    )
+    
 
 # =========================
 # Start Button
@@ -213,7 +213,7 @@ start.place(
 )
 
 start.lift()
-)
+
 
 exit_btn = tk.Button(
     root,
