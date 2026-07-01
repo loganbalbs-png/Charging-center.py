@@ -7,7 +7,7 @@ HEIGHT = 480
 root = tk.Tk()
 root.title("AERO-OS")
 root.geometry("800x480")
-root.attributes("-fullscreen", True)
+root.geometry("800x480")
 root.configure(bg="#66CCFF")
 
 # -----------------------
