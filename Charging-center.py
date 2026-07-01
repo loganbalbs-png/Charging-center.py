@@ -146,8 +146,11 @@ for i, (icon, name) in enumerate(apps):
     )
 
     btn.place(
-        x=x-45,
-        y=y
+    x=x-45,
+    y=y
+)
+
+btn.lift()
     )
 
 # =========================
@@ -209,6 +212,9 @@ start.place(
     y=440
 )
 
+start.lift()
+)
+
 exit_btn = tk.Button(
     root,
     text="❌",
@@ -219,6 +225,9 @@ exit_btn = tk.Button(
 exit_btn.place(
     x=760,
     y=440
+)
+
+exit_btn.lift()
 )
 
 bg.create_text(
